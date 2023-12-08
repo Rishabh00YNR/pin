@@ -9,3 +9,11 @@ html, body{
   height: 100%;
   width: 100%;
 } 
+
+.chat-notification-logo-wrapper {
+  flex-shrink: 0;
+}
+.pin-logo {
+  height: 3rem;
+  width: 3rem;
+}
