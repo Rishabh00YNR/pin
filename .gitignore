@@ -1,0 +1,21 @@
+# Configuration files
+/config.json
+
+# Binary files
+*.bin
+
+# Log files
+/logs/
+
+# Personal IDE settings files
+.idea/
+.vscode/
+
+# Temporary files
+*.tmp
+
+# Cache files
+*.cache
+
+# Packages and libraries
+node_modules/
