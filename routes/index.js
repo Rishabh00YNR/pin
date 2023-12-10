@@ -9,27 +9,23 @@ const upload = require('./multer');
 passport.use(new localStrategy(userModel.authenticate()))
 
 router.get('/', function(req, res, next) {
-  res.render('index');
+  res.render('index', {nav : false});
 });
 
 router.get('/register', function(req,res,next){
-  res.render('register');
-})
-
-router.get('/profile',function(req,res,next){
-  res.send("profile")
+  res.render('register', {nav : false});
 })
 
 router.post('/fileupload', isLoggedIn, upload.single("image"), async function(req,res,next){
 const user = await userModel.findOne({username: req.session.passport.user})
 user.profileImage = req.file.filename;
 await user.save();
-res.redirect("/newProfile")
+res.redirect("/newProfile",{nav: true})
 })
 
 router.get('/newProfile',async function(req,res,next){
   const user =await userModel.findOne({username: req.session.passport.user})
-  res.render("newProfile", {user})
+  res.render("newProfile", {user,nav: true})
 })
 
 router.post('/register', function(req,res,next){
@@ -40,7 +36,7 @@ router.post('/register', function(req,res,next){
   userModel.register(data, req.body.password)
   .then(function(){
     passport.authenticate("local")(req,res, function(){
-      res.redirect("/profile")
+      res.redirect("/newProfile", {nav: true})
     })
   })
   }) 
@@ -62,7 +58,7 @@ function isLoggedIn(req, res, next){
   if(req.isAuthenticated()){
     return next();
   }
-  res.redirect("/");
+  res.redirect("/", {nav: false});
 }
 
 module.exports = router;
