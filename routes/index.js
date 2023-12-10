@@ -3,6 +3,8 @@ var router = express.Router();
 const userModel = require("./users")
 const passport = require("passport")
 const localStrategy = require("passport-local")
+const multer = require('multer');
+const upload = require('./multer');
 
 passport.use(new localStrategy(userModel.authenticate()))
 
@@ -16,6 +18,18 @@ router.get('/register', function(req,res,next){
 
 router.get('/profile',function(req,res,next){
   res.send("profile")
+})
+
+router.post('/fileupload', isLoggedIn, upload.single("image"), async function(req,res,next){
+const user = await userModel.findOne({username: req.session.passport.user})
+user.profileImage = req.file.filename;
+await user.save();
+res.redirect("/newProfile")
+})
+
+router.get('/newProfile',async function(req,res,next){
+  const user =await userModel.findOne({username: req.session.passport.user})
+  res.render("newProfile", {user})
 })
 
 router.post('/register', function(req,res,next){
@@ -32,7 +46,7 @@ router.post('/register', function(req,res,next){
   }) 
 
 router.post('/login', passport.authenticate("local", {
-  successRedirect: "/profile",
+  successRedirect: "/newProfile",
   failureRedirect: "/",
 }), function(req, res,next){ 
 });
